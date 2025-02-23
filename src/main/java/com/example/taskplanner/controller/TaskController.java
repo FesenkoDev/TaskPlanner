@@ -15,6 +15,7 @@ public class TaskController {
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
+        System.out.println("TaskController загружен!");
     }
 
     @GetMapping
