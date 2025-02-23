@@ -167,7 +167,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.taskplanner.TaskPlanner</mainClass>
+                            <mainClass>com.example.taskplanner.TaskPlannerApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
