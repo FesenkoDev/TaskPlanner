@@ -140,10 +140,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.taskplanner.TaskPlannerApplication</mainClass>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>  <!-- Добавляем "fat JAR" -->
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Плагин для создания JAR с Main-Class -->
