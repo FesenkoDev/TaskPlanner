@@ -133,6 +133,7 @@
     </dependencies>
 
     <build>
+        <finalName>app</finalName>  <!-- Устанавливаем имя JAR-файла -->
         <plugins>
             <!-- JavaFX Maven Plugin -->
             <plugin>
