@@ -3,6 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.3</version> <!-- Используй свою версию Spring Boot -->
+        <relativePath/> <!-- Указывает, что использовать BOM Spring Boot -->
+    </parent>
+
     <groupId>com.example</groupId>
     <artifactId>task-planner</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -12,7 +19,6 @@
         <maven.compiler.target>21</maven.compiler.target>
         <spring-boot.version>3.2.3</spring-boot.version>
     </properties>
-
     <dependencies>
         <!-- JavaFX Controls -->
         <dependency>
@@ -139,6 +145,10 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
