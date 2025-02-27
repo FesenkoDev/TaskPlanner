@@ -5,6 +5,8 @@ import com.example.taskplanner.service.FolderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+
 
 import java.util.List;
 
@@ -27,4 +29,14 @@ public class FolderController {
         Folder newFolder = folderService.createFolder(folder);
         return ResponseEntity.ok(newFolder);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFolder(@PathVariable Long id) {
+        if (id == 1) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // ❗ Запрещаем удаление первой папки
+        }
+        folderService.deleteFolder(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
