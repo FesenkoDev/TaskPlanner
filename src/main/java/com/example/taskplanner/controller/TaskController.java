@@ -20,9 +20,10 @@ public class TaskController {
     private TaskRepository taskRepository;
 
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, FolderRepository folderRepository, TaskRepository taskRepository) {
         this.taskService = taskService;
-        System.out.println("TaskController загружен!");
+        this.folderRepository = folderRepository;
+        this.taskRepository = taskRepository;
     }
 
     @GetMapping
@@ -37,7 +38,7 @@ public class TaskController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/tasks")
+    @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Map<String, Object> payload) {
         System.out.println("Получен payload: " + payload); // ✅ Логируем входные данные
 
