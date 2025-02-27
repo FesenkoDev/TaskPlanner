@@ -4,6 +4,7 @@ import com.example.taskplanner.model.Folder;
 import com.example.taskplanner.service.FolderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class FolderController {
         this.folderService = folderService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Folder>> getAllFolders() {
         return ResponseEntity.ok(folderService.getAllFolders());
     }
