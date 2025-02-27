@@ -16,8 +16,8 @@ import java.util.Map;
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskService taskService;
-    private FolderRepository folderRepository;
-    private TaskRepository taskRepository;
+    private final FolderRepository folderRepository;
+    private final TaskRepository taskRepository;
 
 
     public TaskController(TaskService taskService, FolderRepository folderRepository, TaskRepository taskRepository) {
@@ -40,7 +40,10 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getTasksByFolder(@RequestParam Long folderId) {
+        System.out.println("📡 Получаем задачи для folderId: " + folderId); // Логируем
         List<Task> tasks = taskRepository.findByFolderId(folderId); // Фильтруем задачи по папке
+        System.out.println("✅ Найдено задач: " + tasks.size()); // Логируем
+
         return ResponseEntity.ok(tasks);
     }
 
