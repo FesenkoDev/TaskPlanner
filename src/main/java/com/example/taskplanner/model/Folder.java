@@ -18,8 +18,9 @@ public class Folder {
 
     public Folder() {}
 
-    public Folder(String name) {
+    public Folder(String name, String emoji) {
         this.name = name;
+        this.emoji = emoji;
     }
 
     public Long getId() {
@@ -36,5 +37,13 @@ public class Folder {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmoji() {
+        return emoji;
+    }
+
+    public void setEmoji(String emoji) {
+        this.emoji = emoji;
     }
 }
