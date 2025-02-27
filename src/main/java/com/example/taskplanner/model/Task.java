@@ -24,9 +24,10 @@ public class Task {
 
     public Task() {}
 
-    public Task(String title, String description, Folder folder) {
+    public Task(String title, String description, Boolean completed, Folder folder) {
         this.title = title;
         this.description = description;
+        this.completed = completed;
         this.folder = folder;
     }
 

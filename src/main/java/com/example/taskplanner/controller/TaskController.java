@@ -37,16 +37,21 @@ public class TaskController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/tasks")
     public ResponseEntity<Task> createTask(@RequestBody Map<String, Object> payload) {
+        System.out.println("Получен payload: " + payload); // ✅ Логируем входные данные
+
         String title = (String) payload.get("title");
         String description = (String) payload.get("description");
+        Boolean completed = (Boolean) payload.get("completed"); // ✅ Проверить, передается ли оно
         Long folderId = ((Number) payload.get("folderId")).longValue();
+
+        System.out.println("Создаем задачу с title: " + title + ", folderId: " + folderId); // ✅ Проверяем
 
         Folder folder = folderRepository.findById(folderId)
                 .orElseThrow(() -> new RuntimeException("Папка не найдена"));
 
-        Task newTask = new Task(title, description, folder);
+        Task newTask = new Task(title, description, completed, folder);
         taskRepository.save(newTask);
 
         return ResponseEntity.ok(newTask);
