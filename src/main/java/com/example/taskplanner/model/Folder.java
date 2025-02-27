@@ -12,6 +12,10 @@ public class Folder {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(columnDefinition = "TEXT") // Позволяет хранить эмодзи
+    private String emoji = "📁"; // Значение по умолчанию
+
+
     public Folder() {}
 
     public Folder(String name) {

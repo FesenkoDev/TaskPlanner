@@ -26,8 +26,7 @@ public class FolderController {
 
     @PostMapping
     public ResponseEntity<Folder> createFolder(@RequestBody Folder folder) {
-        Folder newFolder = folderService.createFolder(folder);
-        return ResponseEntity.ok(newFolder);
+        return ResponseEntity.ok(folderService.createFolder(folder));
     }
 
     @DeleteMapping("/{id}")
