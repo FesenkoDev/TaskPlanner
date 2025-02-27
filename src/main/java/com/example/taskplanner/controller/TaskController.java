@@ -73,6 +73,21 @@ public class TaskController {
         }
     }
 
+    @PutMapping("/{id}/completed")
+    public ResponseEntity<Task> updateTaskCompletion(
+            @PathVariable Long id,
+            @RequestBody Map<String, Boolean> update) {
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Задача не найдена"));
+
+        task.setCompleted(update.get("completed"));
+        taskRepository.save(task);
+
+        return ResponseEntity.ok(task);
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
