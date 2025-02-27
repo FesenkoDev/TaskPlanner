@@ -38,6 +38,12 @@ public class TaskController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/tasks")
+    public ResponseEntity<List<Task>> getTasksByFolder(@RequestParam Long folderId) {
+        List<Task> tasks = taskRepository.findByFolderId(folderId); // Фильтруем задачи по папке
+        return ResponseEntity.ok(tasks);
+    }
+
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Map<String, Object> payload) {
         System.out.println("Получен payload: " + payload); // ✅ Логируем входные данные
