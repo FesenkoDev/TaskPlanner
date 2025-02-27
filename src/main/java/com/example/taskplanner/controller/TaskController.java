@@ -43,7 +43,7 @@ public class TaskController {
 
         String title = (String) payload.get("title");
         String description = (String) payload.get("description");
-        Boolean completed = (Boolean) payload.get("completed"); // ✅ Проверить, передается ли оно
+        Boolean completed = (Boolean) payload.get("completed");
         Long folderId = ((Number) payload.get("folderId")).longValue();
 
         System.out.println("Создаем задачу с title: " + title + ", folderId: " + folderId); // ✅ Проверяем
