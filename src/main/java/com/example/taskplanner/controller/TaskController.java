@@ -38,25 +38,20 @@ public class TaskController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/tasks")
+    @GetMapping("/by-folder")
     public ResponseEntity<List<Task>> getTasksByFolder(@RequestParam Long folderId) {
-        System.out.println("📡 Получаем задачи для folderId: " + folderId); // Логируем
+
         List<Task> tasks = taskRepository.findByFolderId(folderId); // Фильтруем задачи по папке
-        System.out.println("✅ Найдено задач: " + tasks.size()); // Логируем
 
         return ResponseEntity.ok(tasks);
     }
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Map<String, Object> payload) {
-        System.out.println("Получен payload: " + payload); // ✅ Логируем входные данные
-
         String title = (String) payload.get("title");
         String description = (String) payload.get("description");
         Boolean completed = (Boolean) payload.get("completed");
         Long folderId = ((Number) payload.get("folderId")).longValue();
-
-        System.out.println("Создаем задачу с title: " + title + ", folderId: " + folderId); // ✅ Проверяем
 
         Folder folder = folderRepository.findById(folderId)
                 .orElseThrow(() -> new RuntimeException("Папка не найдена"));
