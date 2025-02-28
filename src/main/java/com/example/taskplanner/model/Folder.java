@@ -15,12 +15,16 @@ public class Folder {
     @Column(columnDefinition = "TEXT") // Позволяет хранить эмодзи
     private String emoji = "📁"; // Значение по умолчанию
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false) // Связь с пользователем
+    private User user;
 
     public Folder() {}
 
-    public Folder(String name, String emoji) {
+    public Folder(String name, String emoji, User user) {
         this.name = name;
         this.emoji = emoji;
+        this.user = user;
     }
 
     public Long getId() {
@@ -46,4 +50,7 @@ public class Folder {
     public void setEmoji(String emoji) {
         this.emoji = emoji;
     }
+
+    public User getUser() {return user;}
+    public void setUser(User user) {this.user = user;}
 }

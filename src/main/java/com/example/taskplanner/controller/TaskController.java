@@ -2,8 +2,10 @@ package com.example.taskplanner.controller;
 
 import com.example.taskplanner.model.Task;
 import com.example.taskplanner.model.Folder;
+import com.example.taskplanner.model.User;
 import com.example.taskplanner.repository.FolderRepository;
 import com.example.taskplanner.repository.TaskRepository;
+import com.example.taskplanner.repository.UserRepository;
 import com.example.taskplanner.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,55 +15,44 @@ import java.util.Optional;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/tasks")
 public class TaskController {
     private final TaskService taskService;
     private final FolderRepository folderRepository;
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-
-    public TaskController(TaskService taskService, FolderRepository folderRepository, TaskRepository taskRepository) {
+    public TaskController(TaskService taskService, FolderRepository folderRepository, TaskRepository taskRepository, UserRepository userRepository) {
         this.taskService = taskService;
         this.folderRepository = folderRepository;
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
-    @GetMapping
-    public List<Task> getAllTask() {
-        return taskService.getAllTasks();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        Optional<Task> task = taskService.getTaskById(id);
-        return task.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/by-folder")
-    public ResponseEntity<List<Task>> getTasksByFolder(@RequestParam Long folderId) {
-
-        List<Task> tasks = taskRepository.findByFolderId(folderId); // Фильтруем задачи по папке
-
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Task>> getUserTasks(@PathVariable Long userId) {
+        List<Task> tasks = taskRepository.findByUserId(userId);
         return ResponseEntity.ok(tasks);
     }
 
-    @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Map<String, Object> payload) {
+    @PostMapping("/add")
+    public ResponseEntity<Task> addTask(@RequestBody Map<String, Object> payload) {
         String title = (String) payload.get("title");
         String description = (String) payload.get("description");
         Boolean completed = (Boolean) payload.get("completed");
         Long folderId = ((Number) payload.get("folderId")).longValue();
+        Long userId = ((Number) payload.get("userId")).longValue();
 
         Folder folder = folderRepository.findById(folderId)
                 .orElseThrow(() -> new RuntimeException("Папка не найдена"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
-        Task newTask = new Task(title, description, completed, folder);
+        Task newTask = new Task(title, description, completed, folder, user);
         taskRepository.save(newTask);
 
         return ResponseEntity.ok(newTask);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
@@ -87,10 +78,10 @@ public class TaskController {
         return ResponseEntity.ok(task);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
 }
+

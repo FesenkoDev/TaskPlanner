@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByFolderId(Long folderId); // ✅ Этот метод должен быть!
+    List<Task> findByUserId(Long userId); // Получаем только задачи этого пользователя
 }
