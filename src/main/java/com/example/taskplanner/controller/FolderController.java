@@ -31,9 +31,9 @@ public class FolderController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFolder(@PathVariable Long id) {
-        if (id == 1) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // ❗ Запрещаем удаление первой папки
-        }
+//        if (id == 1) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // ❗ Запрещаем удаление первой папки
+//        }
         folderService.deleteFolder(id);
         return ResponseEntity.noContent().build();
     }
