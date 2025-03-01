@@ -1,56 +1,41 @@
 package com.example.taskplanner.controller;
 
 import com.example.taskplanner.model.Folder;
-import com.example.taskplanner.model.User;
-import com.example.taskplanner.repository.FolderRepository;
-import com.example.taskplanner.repository.UserRepository;
 import com.example.taskplanner.service.FolderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/folders")
+@RequestMapping("/folders")
 public class FolderController {
     private final FolderService folderService;
-    private final FolderRepository folderRepository;
-    private final UserRepository userRepository;
 
-    public FolderController(FolderService folderService, FolderRepository folderRepository, UserRepository userRepository) {
+    public FolderController(FolderService folderService) {
         this.folderService = folderService;
-        this.folderRepository = folderRepository;
-        this.userRepository = userRepository;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Folder>> getUserFolders(@RequestParam Long userId) {
-        List<Folder> folders = folderRepository.findByUserId(userId);
-        return ResponseEntity.ok(folders);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Folder>> getAllFolders() {
+        return ResponseEntity.ok(folderService.getAllFolders());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Folder> addFolder(@RequestBody Folder folder) {
-        if (folder.getUser() == null || folder.getUser().getId() == null) {
-            throw new RuntimeException("userId обязателен");
-        }
-
-        User user = userRepository.findById(folder.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-
-        folder.setUser(user); // ✅ Устанавливаем пользователя
-        Folder savedFolder = folderRepository.save(folder);
-        return ResponseEntity.ok(savedFolder);
+    @PostMapping
+    public ResponseEntity<Folder> createFolder(@RequestBody Folder folder) {
+        return ResponseEntity.ok(folderService.createFolder(folder));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFolder(@PathVariable Long id) {
-        if (!folderRepository.existsById(id)) {
-            return ResponseEntity.badRequest().body("Папка не найдена");
-        }
-
+    public ResponseEntity<Void> deleteFolder(@PathVariable Long id) {
+//        if (id == 1) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // ❗ Запрещаем удаление первой папки
+//        }
         folderService.deleteFolder(id);
         return ResponseEntity.noContent().build();
     }
-}
 
+}
