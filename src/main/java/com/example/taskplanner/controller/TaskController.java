@@ -46,7 +46,7 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Task> createTask(@RequestBody Map<String, Object> payload) {
         String title = (String) payload.get("title");
         String description = (String) payload.get("description");
