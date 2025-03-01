@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @RestController
-@RequestMapping("/folders")
+@RequestMapping("/api/folders")
 public class FolderController {
     private final FolderService folderService;
 
@@ -31,11 +31,13 @@ public class FolderController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFolder(@PathVariable Long id) {
-//        if (id == 1) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // ❗ Запрещаем удаление первой папки
-//        }
         folderService.deleteFolder(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Folder>> getFoldersByUser(@RequestParam Long userId) {
+        return ResponseEntity.ok(folderService.getFoldersByUserId(userId));
     }
 
 }

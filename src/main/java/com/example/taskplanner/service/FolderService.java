@@ -25,5 +25,9 @@ public class FolderService {
     public void deleteFolder(Long id) {
         folderRepository.deleteById(id);
     }
+
+    public List<Folder> getFoldersByUserId(Long userId) {
+        return folderRepository.findByUserId(userId); // ✅ Теперь возвращает папки ТОЛЬКО текущего пользователя
+    }
 }
 
