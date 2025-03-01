@@ -2,8 +2,11 @@ package com.example.taskplanner.model;
 
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "folders")
+@JsonIgnoreProperties({"user"}) // ✅ Убираем зацикливание
 public class Folder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +19,7 @@ public class Folder {
     private String emoji = "📁"; // Значение по умолчанию
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public Folder() {}
