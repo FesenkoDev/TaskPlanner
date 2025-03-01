@@ -22,6 +22,10 @@ public class Task {
     @JoinColumn(name = "folder_id", nullable = false)
     private Folder folder; // Связь с таблицей folders
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false) // ✅ Добавляем связь с User
+    private User user;
+
     public Task() {}
 
     public Task(String title, String description, Boolean completed, Folder folder) {
@@ -70,5 +74,9 @@ public class Task {
     public void setFolder(Folder folder) {
         this.folder = folder;
     }
+
+    public User getUser() {return user;}
+
+    public void sertUser(User user) {this.user = user;}
 }
 
