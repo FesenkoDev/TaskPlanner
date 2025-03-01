@@ -29,40 +29,47 @@ public class TaskController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Task>> getUserTasks(@PathVariable Long userId) {
+    @GetMapping
+    public ResponseEntity<List<Task>> getUserTasks(@RequestParam Long userId) {
         List<Task> tasks = taskRepository.findByUserId(userId);
         return ResponseEntity.ok(tasks);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Task> addTask(@RequestBody Map<String, Object> payload) {
-        String title = (String) payload.get("title");
-        String description = (String) payload.get("description");
-        Boolean completed = (Boolean) payload.get("completed");
-        Long folderId = ((Number) payload.get("folderId")).longValue();
-        Long userId = ((Number) payload.get("userId")).longValue();
+    public ResponseEntity<Task> addTask(@RequestBody Task task) {
+        if (task.getUser() == null || task.getUser().getId() == null) {
+            throw new RuntimeException("userId обязателен");
+        }
+        if (task.getFolder() == null || task.getFolder().getId() == null) {
+            throw new RuntimeException("folderId обязателен");
+        }
 
-        Folder folder = folderRepository.findById(folderId)
+        Folder folder = folderRepository.findById(task.getFolder().getId())
                 .orElseThrow(() -> new RuntimeException("Папка не найдена"));
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(task.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
-        Task newTask = new Task(title, description, completed, folder, user);
-        taskRepository.save(newTask);
+        task.setFolder(folder);
+        task.setUser(user);
 
-        return ResponseEntity.ok(newTask);
+        Task savedTask = taskRepository.save(task);
+        return ResponseEntity.ok(savedTask);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
-        try {
-            Task updatedTask = taskService.updateTask(id, taskDetails);
-            return ResponseEntity.ok(updatedTask);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Задача не найдена"));
+
+        task.setTitle(taskDetails.getTitle());
+        task.setDescription(taskDetails.getDescription());
+        task.setCompleted(taskDetails.isCompleted());
+
+        Task updatedTask = taskRepository.save(task);
+        return ResponseEntity.ok(updatedTask);
     }
+
 
     @PutMapping("/{id}/completed")
     public ResponseEntity<Task> updateTaskCompletion(
@@ -79,9 +86,14 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
+        if (!taskRepository.existsById(id)) {
+            return ResponseEntity.badRequest().body("Задача не найдена");
+        }
+
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
+
 }
 

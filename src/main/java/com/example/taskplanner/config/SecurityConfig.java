@@ -19,15 +19,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // ✅ Новый способ отключения CSRF
+                .csrf(csrf -> csrf.disable()) // ✅ Отключаем CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll() // ✅ Разрешаем публичный доступ
-                        .anyRequest().authenticated() // 🚫 Все остальные запросы требуют аутентификации
+                        .anyRequest().permitAll() // ✅ Разрешаем доступ к ВСЕМ API без токенов
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // 🔥 Отключаем сессии
 
         return http.build();
     }
+
 }
 
 

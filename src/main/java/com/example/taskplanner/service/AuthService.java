@@ -21,22 +21,27 @@ public class AuthService {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists!");
         }
-        if(userRepository.findByEmail(email).isPresent()) {
+        if(userRepository.findByEmail(email.toLowerCase()).isPresent()) { // ✅ Приводим email к нижнему регистру
             throw new RuntimeException("Email already exists!");
         }
 
         User user = new User();
         user.setUsername(username);
-        user.setEmail(email);
+        user.setEmail(email.toLowerCase()); // ✅ Сохраняем email в нижнем регистре
         user.setPassword(passwordEncoder.encode(password));
 
         return userRepository.save(user);
     }
 
     public Long login(String username, String password) {
-        return userRepository.findByUsername(username)
-                .filter(user -> passwordEncoder.matches(password, user.getPassword()))
-                .map(User::getId) // Возвращаем userId
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Incorrect password");
+        }
+
+        return user.getId(); // ✅ Возвращаем userId
     }
+
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -24,19 +26,21 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request) {
         try {
             User user = authService.registerUser(request.getUsername(), request.getEmail(), request.getPassword());
-            return ResponseEntity.ok("User registered successfully: " + user.getUsername());
+            return ResponseEntity.ok(Map.of("userId", user.getId())); // ✅ Теперь возвращаем userId
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage())); // ✅ Ошибки тоже в JSON
         }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             Long userId = authService.login(request.getUsername(), request.getPassword());
-            return ResponseEntity.ok(userId); // Теперь возвращаем userId
+            return ResponseEntity.ok(Map.of("userId", userId)); // ✅ Теперь возвращаем userId в JSON
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid username or password")); // ✅ Ошибки тоже в JSON
         }
     }
+
 }

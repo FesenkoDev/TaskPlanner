@@ -23,23 +23,32 @@ public class FolderController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Folder>> getUserFolders(@PathVariable Long userId) {
+    @GetMapping
+    public ResponseEntity<List<Folder>> getUserFolders(@RequestParam Long userId) {
         List<Folder> folders = folderRepository.findByUserId(userId);
         return ResponseEntity.ok(folders);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Folder> addFolder(@RequestBody Folder folder, @RequestParam Long userId) {
-        User user = userRepository.findById(userId)
+    public ResponseEntity<Folder> addFolder(@RequestBody Folder folder) {
+        if (folder.getUser() == null || folder.getUser().getId() == null) {
+            throw new RuntimeException("userId обязателен");
+        }
+
+        User user = userRepository.findById(folder.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-        folder.setUser(user); // Устанавливаем пользователя
+
+        folder.setUser(user); // ✅ Устанавливаем пользователя
         Folder savedFolder = folderRepository.save(folder);
         return ResponseEntity.ok(savedFolder);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFolder(@PathVariable Long id) {
+    public ResponseEntity<?> deleteFolder(@PathVariable Long id) {
+        if (!folderRepository.existsById(id)) {
+            return ResponseEntity.badRequest().body("Папка не найдена");
+        }
+
         folderService.deleteFolder(id);
         return ResponseEntity.noContent().build();
     }
