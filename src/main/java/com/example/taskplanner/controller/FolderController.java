@@ -24,7 +24,7 @@ public class FolderController {
         return ResponseEntity.ok(folderService.getAllFolders());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Folder> createFolder(@RequestBody Folder folder) {
         return ResponseEntity.ok(folderService.createFolder(folder));
     }
