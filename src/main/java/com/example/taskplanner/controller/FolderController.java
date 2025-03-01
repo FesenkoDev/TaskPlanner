@@ -35,7 +35,7 @@ public class FolderController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/user")
     public ResponseEntity<List<Folder>> getFoldersByUser(@RequestParam Long userId) {
         return ResponseEntity.ok(folderService.getFoldersByUserId(userId));
     }
